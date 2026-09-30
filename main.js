@@ -12,9 +12,34 @@ import express from 'express';
 import zlib from 'zlib';
 import https from 'https';
 import http from 'http';
+import { timingSafeEqual } from 'node:crypto';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const proxyPassword = process.env.PROXY_PASSWORD;
+
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV !== 'production') return next();
+  if (!proxyPassword) return res.status(503).send('Proxy authentication is not configured');
+
+  const authorization = req.headers.authorization || '';
+  const separator = authorization.indexOf(' ');
+  if (authorization.slice(0, separator) !== 'Basic' || separator === -1) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Proxy"');
+    return res.status(401).send('Authentication required');
+  }
+
+  const decoded = Buffer.from(authorization.slice(separator + 1), 'base64').toString('utf8');
+  const password = Buffer.from(decoded.slice(decoded.indexOf(':') + 1));
+  const expectedPassword = Buffer.from(proxyPassword);
+  if (password.length !== expectedPassword.length || !timingSafeEqual(password, expectedPassword)) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Proxy"');
+    return res.status(401).send('Authentication required');
+  }
+
+  next();
+});
+
 app.use(express.static('public'));
 const cookieJar = new Map();
 function serverFetch(targetUrl, reqHeaders = {}) {
