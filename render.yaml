@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: not-gust-proxy
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PROXY_PASSWORD
+        sync: false
