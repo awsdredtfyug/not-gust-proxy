@@ -225,6 +225,31 @@ window.addEventListener("resize", resizeRain);
 
 resizeRain();
 drawRain();
+const input = document.getElementById("url-input");
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    navigate();
+  }
+});
+
+function navigate() {
+  let val = input.value.trim();
+
+  if (!val) return;
+
+  let url;
+
+  if (/^https?:\/\//i.test(val)) {
+    url = "/proxy/" + val.replace("://", "/");
+  } else if (/^[\w-]+(\.[a-z]{2,})(\/|$)/i.test(val)) {
+    url = "/proxy/https/" + val;
+  } else {
+    url = "/proxy/https/duckduckgo.com/?q=" + encodeURIComponent(val);
+  }
+
+  window.location.href = url;
+}
 </script>
 </body>
 </html>
