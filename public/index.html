@@ -56,7 +56,19 @@ body::before {
   height: 100%;
   z-index: 20;
   pointer-events: none;
+  #root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10;
 }
+
+button,
+input,
+a {
+  position: relative;
+  z-index: 30;
+}
+
 
 /* Keep your website above the rain */
 h1,
