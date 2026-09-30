@@ -165,6 +165,7 @@ button:hover {
     <a class="shortcut" href="/proxy">placeholder</a>
     <a class="shortcut" href="/proxy">placeholder</a>
   </div>
+<script>
 const canvas = document.getElementById("rain");
 const ctx = canvas.getContext("2d");
 
@@ -176,7 +177,6 @@ function resizeRain() {
 
   drops = [];
 
-  // Large glass drops
   for (let i = 0; i < 140; i++) {
     drops.push({
       x: Math.random() * canvas.width,
@@ -210,18 +210,6 @@ function drawRain() {
     ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
     ctx.fill();
 
-    // Small highlight
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(255,255,255,${d.opacity * 0.7})`;
-    ctx.arc(
-      d.x - d.r * 0.35,
-      d.y - d.r * 0.35,
-      Math.max(0.5, d.r * 0.12),
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
-
     d.y += d.speed;
 
     if (d.y > canvas.height + d.r) {
@@ -237,31 +225,6 @@ window.addEventListener("resize", resizeRain);
 
 resizeRain();
 drawRain();
-  <script>
-    const input = document.getElementById('url-input');
-
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') navigate();
-    });
-
-    function navigate() {
-      let val = input.value.trim();
-      if (!val) return;
-
-      let url;
-      // If it looks like a URL, proxy it directly
-      if (/^https?:\/\//.test(val)) {
-        url = '/proxy/' + val.replace('://', '/');
-      } else if (/^[\w-]+(\.[a-z]{2,})(\/|$)/i.test(val)) {
-        // Looks like a bare domain e.g. youtube.com
-        url = '/proxy/https/' + val;
-      } else {
-        // Treat as a search query
-        url = '/proxy/https/duckduckgo.com/?q=' + encodeURIComponent(val);
-      }
-
-      window.location.href = url;
-    }
-  </script>
+</script>
 </body>
 </html>
