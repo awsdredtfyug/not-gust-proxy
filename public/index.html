@@ -164,6 +164,7 @@ button:hover {
     <a class="shortcut" href="/proxy/https/genizymath.github.io/">Genizymath!!</a>
     <a class="shortcut" href="/proxy">placeholder</a>
     <a class="shortcut" href="/proxy">placeholder</a>
+    <a class="shortcut" href="#" onclick="downloadHtml(); return false;">Download HTML</a>
   </div>
 <script>
 const canvas = document.getElementById("rain");
@@ -249,6 +250,18 @@ function navigate() {
   }
 
   window.location.href = url;
+}
+
+function downloadHtml() {
+  const html = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "index.html";
+  link.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 </body>
